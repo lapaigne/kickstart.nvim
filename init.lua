@@ -204,7 +204,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'html', 'css', 'javascript', 'typescript', 'json', 'c', 'h', 'cpp' },
+  pattern = { 'html', 'css', 'javascript', 'typescript', 'json', 'h', 'cpp' },
   callback = function()
     vim.bo.shiftwidth = 4
     vim.bo.tabstop = 4
@@ -294,7 +294,7 @@ require('lazy').setup({
   -- Then, because we use the `opts` key (recommended), the configuration runs
   -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
 
-  { -- Useful plugin to show you pending keybinds.
+  {                     -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
@@ -340,7 +340,7 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
-        { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
+        { '<leader>c', group = '[C]ode',     mode = { 'n', 'x' } },
         { '<leader>d', group = '[D]ocument' },
         { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
@@ -380,7 +380,7 @@ require('lazy').setup({
       { 'nvim-telescope/telescope-ui-select.nvim' },
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-tree/nvim-web-devicons',            enabled = vim.g.have_nerd_font },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -422,6 +422,17 @@ require('lazy').setup({
         defaults = {
           file_ignore_patterns = {
             '.git',
+            'bin',
+            'obj',
+            'Debug',
+            'Release',
+            'wwwroot',
+            '%.dll$',
+            '%.pdb$',
+            '%.exe$',
+            '%.cache$',
+            '.vs',
+            'node%_modules',
           },
         },
       }
@@ -493,8 +504,7 @@ require('lazy').setup({
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
-
+      { 'j-hui/fidget.nvim',       opts = {} },
       -- Allows extra capabilities provided by nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
     },
@@ -616,6 +626,14 @@ require('lazy').setup({
               callback = function(event2)
                 vim.lsp.buf.clear_references()
                 vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+              end,
+            })
+
+            vim.api.nvim_create_autocmd('BufWritePre', {
+              group = vim.api.nvim_create_augroup('kickstart-format-on-save-' .. event.buf, { clear = true }),
+              buffer = event.buf,
+              callback = function()
+                vim.lsp.buf.format { async = false }
               end,
             })
           end
@@ -922,7 +940,7 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'retrobox'
     end,
   },
 
