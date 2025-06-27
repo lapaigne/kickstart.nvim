@@ -204,7 +204,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'html', 'css', 'javascript', 'typescript', 'json', 'h', 'cpp' },
+  pattern = { 'templ', 'go', 'html', 'css', 'javascript', 'typescript', 'json', 'cpp' },
   callback = function()
     vim.bo.shiftwidth = 4
     vim.bo.tabstop = 4
@@ -214,7 +214,7 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'c' },
+  pattern = { 'h', 'c' },
   callback = function()
     vim.bo.shiftwidth = 2
     vim.bo.tabstop = 2
@@ -285,11 +285,13 @@ require('lazy').setup({
       },
     },
   },
-  {
-    'windwp/nvim-autopairs',
-    opts = {},
-  },
 
+  -- DEBUGGER
+  {
+    'mfussenegger/nvim-dap',
+    opts = {},
+    config = function() end,
+  },
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
@@ -463,6 +465,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+      -- unbind [s] so i can use it for tmux
+      vim.keymap.set('n', 's', '<nop>')
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -952,6 +957,12 @@ require('lazy').setup({
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'retrobox'
       -- reset background to use the default terminal settings
+      vim.cmd [[
+  highlight LineNr guibg=NONE
+  highlight SignColumn guibg=NONE
+  highlight CursorLineNr guibg=NONE
+]]
+      vim.cmd [[highlight CursorLine guibg=NONE ctermbg=NONE]]
       vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
     end,
   },
@@ -975,7 +986,7 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      -- require('mini.surround').setup()
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
@@ -1036,10 +1047,10 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
