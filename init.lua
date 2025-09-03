@@ -214,7 +214,7 @@ vim.api.nvim_create_autocmd('FileType', {
 })
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'h', 'c' },
+  pattern = { 'h', 'c', 'lua' },
   callback = function()
     vim.bo.shiftwidth = 2
     vim.bo.tabstop = 2
@@ -467,7 +467,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- unbind [s] so i can use it for tmux
-      vim.keymap.set('n', 's', '<nop>')
+      vim.keymap.set('n', 's', '<Nop>')
+      -- 'tis just annoying
+      vim.keymap.set('i', '<C-t>', '<Nop>')
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -887,7 +889,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<C-Space>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
@@ -898,7 +900,7 @@ require('lazy').setup({
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
           --  completions whenever it has completion options available.
-          ['<C-Space>'] = cmp.mapping.complete {},
+          ['<C-y>'] = cmp.mapping.complete {},
 
           -- Think of <c-l> as moving to the right of your snippet expansion.
           --  So if you have a snippet that's like:
@@ -955,7 +957,13 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'retrobox'
+      -- vim.cmd.colorscheme 'retrobox'
+      -- vim.cmd.colorscheme 'unokai'
+      vim.cmd.colorscheme 'default'
+      vim.api.nvim_set_hl(0, 'FidgetTitle', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'FidgetTask', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'Fidget', { bg = 'none' })
+      vim.api.nvim_set_hl(0, 'FidgetWindow', { bg = 'none' }) -- if exists
       -- reset background to use the default terminal settings
       vim.cmd [[
   highlight LineNr guibg=NONE
@@ -1051,6 +1059,13 @@ require('lazy').setup({
   require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
+  {
+    'windwp/nvim-ts-autotag',
+    event = 'InsertEnter',
+    config = function()
+      require('nvim-ts-autotag').setup()
+    end,
+  },
   -- require 'kickstart.plugins.neo-tree',
   -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
