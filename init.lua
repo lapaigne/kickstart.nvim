@@ -1,3 +1,4 @@
+vim.o.exrc = true
 --[[
 
 =====================================================================
@@ -103,6 +104,8 @@ vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
 -- vim.opt.relativenumber = true
+
+vim.opt.bomb = false
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -601,6 +604,8 @@ require('lazy').setup({
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
 
+          map('<leader>cd', vim.diagnostic.open_float, '[C]ode [D]iagnostics')
+
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
           map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
@@ -713,7 +718,12 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
+        clangd = {
+          cmd = {
+            'clangd',
+            '--function-arg-placeholders=0',
+          },
+        },
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
@@ -724,7 +734,12 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
-        --
+
+        templ = {
+          cmd = { 'templ', 'lsp' },
+          filetypes = 'html',
+          capabilities = capabilities,
+        },
 
         lua_ls = {
           -- cmd = { ... },
@@ -959,18 +974,46 @@ require('lazy').setup({
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       -- vim.cmd.colorscheme 'retrobox'
       -- vim.cmd.colorscheme 'unokai'
+
+      vim.o.termguicolors = true
+
       vim.cmd.colorscheme 'default'
-      vim.api.nvim_set_hl(0, 'FidgetTitle', { bg = 'none' })
-      vim.api.nvim_set_hl(0, 'FidgetTask', { bg = 'none' })
-      vim.api.nvim_set_hl(0, 'Fidget', { bg = 'none' })
-      vim.api.nvim_set_hl(0, 'FidgetWindow', { bg = 'none' }) -- if exists
+
+      local green = '#e0f7c2'
+      local cyan = '#a0fdfd'
+
+      vim.api.nvim_set_hl(0, 'String', { fg = green })
+      vim.api.nvim_set_hl(0, 'Character', { fg = green })
+      vim.api.nvim_set_hl(0, 'Added', { fg = green })
+      vim.api.nvim_set_hl(0, 'DiagnosticOK', { fg = green })
+      vim.api.nvim_set_hl(0, 'ModeMsg', { fg = green })
+
+      -- vim.api.nvim_set_hl(0, 'Identifier', { fg = cyan })
+      -- vim.api.nvim_set_hl(0, 'Special', { fg = cyan })
+
+      vim.api.nvim_set_hl(0, 'Function', { fg = cyan })
+      vim.api.nvim_set_hl(0, 'Changed', { fg = cyan })
+      vim.api.nvim_set_hl(0, 'CmpItermKindDefault', { fg = cyan })
+      vim.api.nvim_set_hl(0, 'DiagnosticInfo', { fg = cyan })
+      vim.api.nvim_set_hl(0, 'Directory', { fg = cyan })
+      vim.api.nvim_set_hl(0, 'MoreMsg', { fg = cyan })
+      vim.api.nvim_set_hl(0, 'Question', { fg = cyan })
+      vim.api.nvim_set_hl(0, 'QuickFixLine', { fg = cyan })
+      vim.api.nvim_set_hl(0, 'Special', { fg = cyan })
+      vim.api.nvim_set_hl(0, 'TodoFgTODO', { fg = cyan })
+      vim.api.nvim_set_hl(0, 'TodoSignTODO', { fg = cyan })
+
+      vim.api.nvim_set_hl(0, 'FidgetTitle', { bg = NONE })
+      vim.api.nvim_set_hl(0, 'FidgetTask', { bg = NONE })
+      vim.api.nvim_set_hl(0, 'Fidget', { bg = NONE })
+      vim.api.nvim_set_hl(0, 'FidgetWindow', { bg = NONE }) -- if exists
       -- reset background to use the default terminal settings
       vim.cmd [[
   highlight LineNr guibg=NONE
   highlight SignColumn guibg=NONE
-  highlight CursorLineNr guibg=NONE
+  highlight CursorLineNr guibg=NONE ctermbg=NONE
 ]]
-      vim.cmd [[highlight CursorLine guibg=NONE ctermbg=NONE]]
+      vim.cmd [[highlight CursorLine guibg=NONE ]]
       vim.api.nvim_set_hl(0, 'Normal', { bg = 'none' })
     end,
   },
@@ -1073,7 +1116,7 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  -- { import = 'custom.plugins' },
+  { import = 'custom.plugins' },
   --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
@@ -1100,6 +1143,8 @@ require('lazy').setup({
     },
   },
 })
+
+vim.opt.modeline = false
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
